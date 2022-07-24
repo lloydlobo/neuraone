@@ -94,7 +94,7 @@ export class Sensors {
 
   draw(ctx: CanvasRenderingContext2D) {
     const arrReadingEnd = [];
-    const entries: number[][] = [];
+    // const entries: number[][] = [];
     for (let i = 0; i < this.rayCount; i += 1) {
       let end = this.rays[i][1];
       // let end = { x: this.rays[i][1].x, y: this.rays[i][1].y };
@@ -102,11 +102,16 @@ export class Sensors {
       let reading;
       if (this.readings[i]) {
         reading = this.readings[i];
+        for (const [key, value] of Object.entries(reading)) {
+          console.log(key, value, value.x, value.y);
+          end = { x: value.x, y: value.y };
+        }
         arrReadingEnd.push(reading);
-
-        console.log("arrReadingEnd", arrReadingEnd);
+        // console.log("arrReadingEnd", arrReadingEnd);
       }
       // console.log("end", end, end.x, end.y);
+      // arrReadingEnd.forEach((end) => { //   for (const [key, value] of Object.entries(end)) { //     console.log(key, value.x, value.y); //     entries.push([value.x, value.y]); //   } // });
+
       ctx.beginPath();
       ctx.lineWidth = this.rayWidth;
       ctx.strokeStyle = this.rayDefaultColor;
@@ -114,22 +119,16 @@ export class Sensors {
       ctx.lineTo(end.x, end.y);
       ctx.stroke();
 
-      if (entries[i]) {
-        ctx.beginPath();
-        ctx.lineWidth = this.rayWidth;
-        ctx.strokeStyle = this.rayDetectColor;
-        ctx.moveTo(this.rays[i][1].x, this.rays[i][1].y);
-        // ctx.lineTo(end.x, end.y);
-        ctx.lineTo(entries[i][0], entries[i][1]);
-        ctx.stroke();
-      }
+      // if (entries[i]) {
+      ctx.beginPath();
+      ctx.lineWidth = this.rayWidth;
+      ctx.strokeStyle = this.rayDetectColor;
+      ctx.moveTo(this.rays[i][1].x, this.rays[i][1].y);
+      ctx.lineTo(end.x, end.y);
+      // ctx.lineTo(entries[i][0], entries[i][1]);
+      ctx.stroke();
+      // }
     }
-    arrReadingEnd.forEach((end) => {
-      for (const [key, value] of Object.entries(end)) {
-        console.log(key, value.x, value.y);
-        entries.push([value.x, value.y]);
-      }
-    });
   } // end draw()
 
   // #1 Map out offsets to array
