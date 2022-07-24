@@ -19,7 +19,7 @@ export class Sensors {
 
   rayDetectColor: string;
 
-  readings: ({ x: number; y: number; offset: number }[] | null)[];
+  readings: { x: number; y: number; offset: number }[][];
 
   constructor(ball: Ball) {
     this.ball = ball;
@@ -41,12 +41,15 @@ export class Sensors {
 
     for (let i = 0; i < this.rays.length; i += 1) {
       const reading = this.getReading(this.rays[i], borders);
+      if (!reading) {
+        return;
+      }
       this.readings.push(reading);
     }
-    console.log(
-      "file: Sensors.ts | line 45 | Sensors | update | this.readings",
-      this.readings
-    );
+    // console.log(
+    //   "file: Sensors.ts | line 45 | Sensors | update | this.readings",
+    //   this.readings
+    // );
   }
 
   private getReading(
@@ -90,9 +93,20 @@ export class Sensors {
   } // end private castRays()
 
   draw(ctx: CanvasRenderingContext2D) {
+    const arrReadingEnd = [];
+    const entries: number[][] = [];
     for (let i = 0; i < this.rayCount; i += 1) {
       let end = this.rays[i][1];
+      // let end = { x: this.rays[i][1].x, y: this.rays[i][1].y };
 
+      let reading;
+      if (this.readings[i]) {
+        reading = this.readings[i];
+        arrReadingEnd.push(reading);
+
+        console.log("arrReadingEnd", arrReadingEnd);
+      }
+      // console.log("end", end, end.x, end.y);
       ctx.beginPath();
       ctx.lineWidth = this.rayWidth;
       ctx.strokeStyle = this.rayDefaultColor;
@@ -100,13 +114,22 @@ export class Sensors {
       ctx.lineTo(end.x, end.y);
       ctx.stroke();
 
-      ctx.beginPath();
-      ctx.lineWidth = this.rayWidth;
-      ctx.strokeStyle = this.rayDetectColor;
-      ctx.moveTo(this.rays[i][1].x, this.rays[i][1].y);
-      ctx.lineTo(end.x, end.y);
-      ctx.stroke();
+      if (entries[i]) {
+        ctx.beginPath();
+        ctx.lineWidth = this.rayWidth;
+        ctx.strokeStyle = this.rayDetectColor;
+        ctx.moveTo(this.rays[i][1].x, this.rays[i][1].y);
+        // ctx.lineTo(end.x, end.y);
+        ctx.lineTo(entries[i][0], entries[i][1]);
+        ctx.stroke();
+      }
     }
+    arrReadingEnd.forEach((end) => {
+      for (const [key, value] of Object.entries(end)) {
+        console.log(key, value.x, value.y);
+        entries.push([value.x, value.y]);
+      }
+    });
   } // end draw()
 
   // #1 Map out offsets to array
