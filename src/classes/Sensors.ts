@@ -19,17 +19,17 @@ export class Sensors {
 
   rayDetectColor: string;
 
-  readings: ({ x: number; y: number; offset: number }[] | null)[];
+  readings;
 
   constructor(ball: Ball) {
     this.ball = ball;
     this.rayCount = 3;
-    this.rayLength = 250;
     this.raySpread = Math.PI / 2;
+    this.rayLength = this.ball.size * 1.618 * this.raySpread * this.rayCount;
 
     this.rayWidth = 2;
     this.rayDefaultColor = "yellow";
-    this.rayDetectColor = "red";
+    this.rayDetectColor = "green";
 
     this.rays = [];
     this.readings = [];
@@ -41,34 +41,45 @@ export class Sensors {
 
     for (let i = 0; i < this.rays.length; i += 1) {
       const reading = this.getReading(this.rays[i], borders);
+      if (!reading) return;
+      // console.log({ i, reading });
       this.readings.push(reading);
     }
+
     console.log(
       "file: Sensors.ts | line 45 | Sensors | update | this.readings",
       this.readings
     );
+
   }
 
   private getReading(
     ray: { x: number; y: number }[],
     borders: { x: number; y: number }[][]
   ): { x: number; y: number; offset: number }[] | null {
-    let arrayTouches = this.pushIntersectedTouch(borders, ray); // for loop
-
+    let arrayTouches = [] as { x: number; y: number; offset: number }[];
+    for (let i = 0; i < borders.length; i += 1) {
+      const touch = getIntersection(
+        ray[0],
+        ray[1],
+        borders[i][0],
+        borders[i][1]
+      ) as { x: number; y: number; offset: number } | null;
+      if (touch) {
+        arrayTouches.push(touch);
+      }
+    } // end for loop
     if (arrayTouches.length === 0) {
-      // no intersection ==> break function call
-      return null;
+      return null; // no intersection ==> break function call
     } else {
       const arrayOffsets = this.mapArrayTouchesOffsets(arrayTouches);
       const offsetMinimum = Math.min(...arrayOffsets) as number; // spread
-
       return this.findArrayMinTouchOffset(arrayTouches, offsetMinimum);
     } // end of if else
   }
 
   private castRays() {
     this.rays = [];
-    let ray;
 
     for (let i = 0; i < this.rayCount; i += 1) {
       const rayAngle =
@@ -83,31 +94,35 @@ export class Sensors {
         x: this.ball.x - Math.sin(rayAngle) * this.rayLength,
         y: this.ball.y - Math.cos(rayAngle) * this.rayLength,
       };
-      ray = [start, end];
 
-      this.rays.push(ray);
+      this.rays.push([start, end]);
     }
   } // end private castRays()
 
   draw(ctx: CanvasRenderingContext2D) {
     for (let i = 0; i < this.rayCount; i += 1) {
       let end = this.rays[i][1];
+      if (this.readings[i]) {
+        end = this.readings[i];
+      }
 
       ctx.beginPath();
-      ctx.lineWidth = this.rayWidth;
-      ctx.strokeStyle = this.rayDefaultColor;
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = "yellow";
       ctx.moveTo(this.rays[i][0].x, this.rays[i][0].y);
       ctx.lineTo(end.x, end.y);
       ctx.stroke();
 
       ctx.beginPath();
-      ctx.lineWidth = this.rayWidth;
-      ctx.strokeStyle = this.rayDetectColor;
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = "black";
       ctx.moveTo(this.rays[i][1].x, this.rays[i][1].y);
       ctx.lineTo(end.x, end.y);
       ctx.stroke();
     }
   } // end draw()
+
+  // HELPER FUNCTIONS ----------------------------------------------------------
 
   // #1 Map out offsets to array
   private mapArrayTouchesOffsets(
@@ -124,12 +139,8 @@ export class Sensors {
   private findArrayMinTouchOffset(
     arrayTouches: { x: number; y: number; offset: number }[],
     offsetMinimum: number
-  ) {
-    const arrayMinTouchOffset = [] as {
-      x: number;
-      y: number;
-      offset: number;
-    }[];
+  ): { x: number; y: number; offset: number }[] {
+    const arrayMinTouchOffset = [];
     for (let i = 0; i < arrayTouches.length; i += 1) {
       if (arrayTouches[i].offset === offsetMinimum) {
         arrayMinTouchOffset.push(arrayTouches[i]);
@@ -137,33 +148,5 @@ export class Sensors {
     }
 
     return arrayMinTouchOffset;
-  }
-
-  private getArrTouchesIntersected(
-    borders: { x: number; y: number }[][],
-    ray: { x: number; y: number }[],
-    arrayTouches: { x: number; y: number; offset: number }[]
-  ) {
-    for (let i = 0; i < borders.length; i += 1) {
-      const touch = getIntersection(
-        ray[0],
-        ray[1],
-        borders[i][0],
-        borders[i][1]
-      ) as { x: number; y: number; offset: number };
-
-      if (touch) {
-        arrayTouches.push(touch);
-      }
-    }
-  }
-
-  private pushIntersectedTouch(
-    borders: { x: number; y: number }[][],
-    ray: { x: number; y: number }[]
-  ) {
-    let arrayTouches = [] as { x: number; y: number; offset: number }[];
-    this.getArrTouchesIntersected(borders, ray, arrayTouches); // for loop
-    return arrayTouches;
   }
 }

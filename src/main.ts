@@ -1,9 +1,9 @@
 import "./style.css";
-// import { fillCanvas } from "./fillCanvas";
 import { CONTROLLER, HSLA, WAVE } from "./constants/constants";
 import { Ball } from "./classes/Ball";
 import { createBorders } from "./generators/createBorders";
 import { updateBallColor } from "./generators/updateBallColor";
+import { fillCanvas } from "./generators/fillCanvas";
 
 document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
   <canvas></canvas>
@@ -13,7 +13,7 @@ export const canvas = document.querySelector("canvas") as HTMLCanvasElement;
 export const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
-const borders = createBorders();
+const borders = createBorders(90 / 100);
 
 CONTROLLER.speed = CONTROLLER.increment;
 
@@ -34,20 +34,34 @@ const ball = new Ball(
   "KEYS"
 );
 
+export const CTX = {
+  translateX: -ball.x + canvas.width / 2,
+  translateY: -ball.y + canvas.height * 0.7,
+};
 function loop() {
   ball.update(canvas, borders.borders);
-  // fillCanvas(); // animated canvas fill LATER
-  ctx.fillStyle = "#00000045";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  canvas.height = window.innerHeight;
+  canvas.width = window.innerWidth;
+
+  // ctx.fillStyle = "#00f0ff45";
+  fillCanvas(); // animated canvas fill LATER
   ctx.save();
-  // ctx.translate(TRANSLATE.x, TRANSLATE.y);
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  CTX.translateX = -ball.x + canvas.width / 2;
+  CTX.translateY = -ball.y + canvas.height * 0.7;
+  ctx.translate(CTX.translateX, CTX.translateY);
+
+  borders.update(ctx, CTX.translateX, CTX.translateY);
+  // borders.update( ctx, -ball.x + canvas.width / 2, -ball.y + canvas.height * 0.7);
   borders.draw(ctx);
+
   ctx.globalAlpha = 0.9;
   ball.draw(ctx);
   ball.color = updateBallColor(30, -30);
 
+
   ctx.restore();
-  requestAnimationFrame(loop);
   CONTROLLER.increment += WAVE.frequency;
+  requestAnimationFrame(loop);
 }
 loop();
