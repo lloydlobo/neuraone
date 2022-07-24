@@ -27,8 +27,8 @@ const BALL_PROP = {
 const ball = new Ball(
   canvas.width / 2,
   canvas.height / 2,
-  5,
-  5,
+  2,
+  2,
   10,
   BALL_PROP.color
 );

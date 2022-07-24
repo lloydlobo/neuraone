@@ -23,7 +23,7 @@ export class Sensors {
 
   constructor(ball: Ball) {
     this.ball = ball;
-    this.rayCount = 5;
+    this.rayCount = 1;
     this.rayLength = 250;
     this.raySpread = Math.PI;
 
@@ -43,7 +43,6 @@ export class Sensors {
       const reading = this.getReading(this.rays[i], borders);
       this.readings.push(reading);
     }
-    console.log(this.readings);
   }
 
   private getReading(
