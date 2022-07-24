@@ -30,7 +30,8 @@ const ball = new Ball(
   2,
   2,
   10,
-  BALL_PROP.color
+  BALL_PROP.color,
+  "KEYS"
 );
 
 function loop() {
@@ -42,6 +43,8 @@ function loop() {
   // ctx.translate(TRANSLATE.x, TRANSLATE.y);
   borders.draw(ctx);
   ball.draw(ctx);
+  ball.velX += Math.sin(0.03);
+  ball.velY += Math.sin(0.03);
   // ball.sensors.draw(ctx);
   ball.color = updateBallColor(30, -30);
 

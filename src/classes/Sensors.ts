@@ -25,7 +25,7 @@ export class Sensors {
     this.ball = ball;
     this.rayCount = 1;
     this.rayLength = 250;
-    this.raySpread = Math.PI;
+    this.raySpread = 2 * Math.PI;
 
     this.rayWidth = 2;
     this.rayDefaultColor = "yellow";
