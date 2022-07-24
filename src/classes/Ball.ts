@@ -56,8 +56,10 @@ export class Ball {
     this.damaged = false;
 
     this.controlsType = controlsType;
+    if (this.controlsType === "KEYS") {
+      this.sensors = new Sensors(this);
+    }
     this.controls = new Controls(this.controlsType);
-    this.sensors = new Sensors(this);
 
     this.acceleration = 0.2;
     this.angle = 0;
@@ -69,67 +71,74 @@ export class Ball {
 
   update(canvas: HTMLCanvasElement, borders: { x: number; y: number }[][]) {
     if (!this.damaged) {
-      this.checkBounds(canvas);
       this.move();
+      this.checkBounds(canvas);
     }
     if (this.sensors) {
       this.sensors.update(borders);
+      const offsets = this.sensors.readings.map((s) =>
+        s == null ? 0 : 1 - s.offset
+      );
+      if (offsets) {
+        console.log(offsets);
+      }
     }
   }
 
   draw(ctx: CanvasRenderingContext2D) {
-    ctx.beginPath();
-    ctx.fillStyle = this.color;
-    ctx.moveTo(this.x, this.y);
-    ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
-    ctx.fill();
-
     if (this.sensors) {
       this.sensors.draw(ctx);
     }
+    ctx.beginPath();
+    ctx.fillStyle = this.color;
+    ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
+    ctx.fill();
   }
 
   private move() {
     if (this.controlsType === "KEYS") {
-      if (this.controls.up) {
-        this.speed += this.acceleration;
-      }
-      if (this.controls.down) {
-        this.speed -= this.acceleration;
-      }
-
-      if (this.speed > this.maxSpeed) {
-        this.speed = this.maxSpeed;
-      }
-      if (this.speed < -this.maxSpeed) {
-        this.speed = -this.maxSpeed;
-      }
-
-      if (this.speed > 0) {
-        this.speed -= this.friction;
-      }
-      if (this.speed < 0) {
-        this.speed += this.friction;
-      }
-
-      if (Math.abs(this.speed) < this.friction) {
-        this.speed = 0;
-      }
-      if (this.speed !== 0) {
-        const flipPolarity = this.speed > 0 ? 1 : -1;
-        if (this.controls.left) {
-          this.angle += 0.03 * flipPolarity;
-        }
-        if (this.controls.right) {
-          this.angle -= 0.03 * flipPolarity;
-        }
-      }
-
+      this.handleManualControls();
       this.x -= Math.sin(this.angle) * this.speed;
       this.y -= Math.cos(this.angle) * this.speed;
     } else if (this.controlsType === "AI") {
       this.x += this.velX;
       this.y += this.velY;
+    }
+  }
+
+  private handleManualControls() {
+    if (this.controls.up) {
+      this.speed += this.acceleration;
+    }
+    if (this.controls.down) {
+      this.speed -= this.acceleration;
+    }
+
+    if (this.speed > this.maxSpeed) {
+      this.speed = this.maxSpeed;
+    }
+    if (this.speed < -this.maxSpeed) {
+      this.speed = -this.maxSpeed;
+    }
+
+    if (this.speed > 0) {
+      this.speed -= this.friction;
+    }
+    if (this.speed < 0) {
+      this.speed += this.friction;
+    }
+
+    if (Math.abs(this.speed) < this.friction) {
+      this.speed = 0;
+    }
+    if (this.speed !== 0) {
+      const flipPolarity = this.speed > 0 ? 1 : -1;
+      if (this.controls.left) {
+        this.angle += 0.03 * flipPolarity;
+      }
+      if (this.controls.right) {
+        this.angle -= 0.03 * flipPolarity;
+      }
     }
   }
 

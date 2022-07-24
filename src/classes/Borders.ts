@@ -78,4 +78,15 @@ export class Borders {
       ctx.stroke();
     }
   }
+
+  update(
+    ctx: CanvasRenderingContext2D,
+    translateX: number,
+    translateY: number
+  ) {
+    ctx.save();
+    ctx.translate(translateX, translateY);
+    this.draw(ctx);
+    ctx.restore();
+  }
 }
