@@ -7,11 +7,14 @@ export class Controls {
 
   right: boolean;
 
+  isActive: boolean;
+
   constructor(controlType: string) {
     this.up = false;
     this.down = false;
     this.left = false;
     this.right = false;
+    this.isActive = false;
 
     switch (controlType) {
       case "KEYS": {
@@ -26,9 +29,15 @@ export class Controls {
   } // constructor()
 
   private addKeyboardEventListener() {
-    window.onkeydown = (event) => this.move(event, true);
+    window.onkeydown = (event) => {
+      this.isActive = true;
+      this.move(event, true);
+    };
 
-    window.onkeyup = (event) => this.move(event, false);
+    window.onkeyup = (event) => {
+      this.isActive = false;
+      this.move(event, false);
+    };
   } // private addKeyboardEventListener()
 
   private move(event: KeyboardEvent, isTrueOrFalse: boolean) {

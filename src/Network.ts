@@ -19,6 +19,7 @@ export class Network {
     for (let i = 1; i < network.levels.length; i += 1) {
       outputs = Level.feedForward(outputs, network.levels[i]);
     }
+
     return outputs;
   }
 }

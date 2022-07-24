@@ -90,13 +90,27 @@ export class Ball {
       // this.getOffsets();
 
       const outputs = Network.feedForward(arrayOffsets, this.brain);
-
-      if (this.useBrain) {
-        this.controls.up = outputs[0];
-        this.controls.left = outputs[1];
-        this.controls.right = outputs[2];
-        this.controls.down = outputs[3];
+      if (!this.controls.isActive) {
+        if (this.useBrain) {
+          // this.controls.up = outputs[0];
+          // this.controls.left = outputs[1];
+          // this.controls.right = outputs[2];
+          this.controls.down = outputs[3];
+        }
       }
+      // else if (this.controls.isActive) {
+      //   // this.move();
+      //   // this.controls.up = false;
+      //   // this.controls.left = false;
+      //   // this.controls.right = false;
+      //   // this.controls.down = false;
+      // }
+      // //  else {
+      //   this.controls.up = false;
+      //   this.controls.left = false;
+      //   this.controls.right = false;
+      //   this.controls.down = false;
+      // }
     }
   }
 
@@ -174,6 +188,7 @@ export class Ball {
     );
     if (offsets) {
       arrayOffsets.push(offsets);
+      console.log(offsets);
     }
   }
 }
