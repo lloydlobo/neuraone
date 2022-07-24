@@ -31,13 +31,16 @@ export class Borders {
 
   borders: { x: number; y: number }[][];
 
+  lineWidth: number;
+
   constructor(
     x: number,
     y: number,
     width: number,
     height: number,
     laneCountX = 3,
-    laneCountY = 3
+    laneCountY = 3,
+    lineWidth = 3
   ) {
     this.x = x;
     this.y = y;
@@ -45,6 +48,7 @@ export class Borders {
     this.height = height;
     this.laneCountX = laneCountX;
     this.laneCountY = laneCountY;
+    this.lineWidth = lineWidth;
     // x & y - midpoints of canvas width & height
     this.left = this.x - width / 2;
     this.right = this.x + width / 2;
@@ -68,7 +72,7 @@ export class Borders {
     for (let i = 0; i < this.borders.length; i += 1) {
       ctx.beginPath();
       ctx.strokeStyle = updateBallColor(-10, -30);
-      ctx.lineWidth = 8;
+      ctx.lineWidth = this.lineWidth;
       ctx.moveTo(this.borders[i][0].x, this.borders[i][0].y);
       ctx.lineTo(this.borders[i][1].x, this.borders[i][1].y);
       ctx.stroke();

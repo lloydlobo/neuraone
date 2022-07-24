@@ -27,14 +27,14 @@ const BALL_PROP = {
 const ball = new Ball(
   canvas.width / 2,
   canvas.height / 2,
-  12,
-  12,
+  5,
+  5,
   10,
   BALL_PROP.color
 );
 
 function loop() {
-  ball.update(canvas);
+  ball.update(canvas, borders.borders);
   // fillCanvas(); // animated canvas fill LATER
   ctx.fillStyle = "#00000045";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -42,9 +42,9 @@ function loop() {
   // ctx.translate(TRANSLATE.x, TRANSLATE.y);
   borders.draw(ctx);
   ball.draw(ctx);
+  // ball.sensors.draw(ctx);
   ball.color = updateBallColor(30, -30);
 
-  ball.sensors.draw(ctx);
   ctx.restore();
   requestAnimationFrame(loop);
   CONTROLLER.increment += WAVE.frequency;

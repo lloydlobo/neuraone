@@ -36,12 +36,12 @@ export class Ball {
     this.sensors = new Sensors(this);
   }
 
-  update(canvas: HTMLCanvasElement) {
+  update(canvas: HTMLCanvasElement, borders: { x: number; y: number }[][]) {
     this.checkBounds(canvas);
     this.move();
 
     if (this.sensors) {
-      this.sensors.update();
+      this.sensors.update(borders);
       // console.log("sensor update");
     }
   }

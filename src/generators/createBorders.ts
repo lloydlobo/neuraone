@@ -1,7 +1,7 @@
 import { Borders } from "../classes/Borders";
 import { canvas } from "../main";
 
-export function createBorders() {
+export function createBorders(scale = 0.95) {
   const BORDERS = {
     x: canvas.width / 2,
     y: canvas.height / 2,
@@ -14,8 +14,8 @@ export function createBorders() {
   const borders = new Borders(
     BORDERS.x,
     BORDERS.y,
-    BORDERS.width,
-    BORDERS.height,
+    BORDERS.width * scale,
+    BORDERS.height * scale,
     BORDERS.laneCountX,
     BORDERS.laneCountY
   );
