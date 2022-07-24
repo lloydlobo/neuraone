@@ -23,9 +23,9 @@ export class Sensors {
 
   constructor(ball: Ball) {
     this.ball = ball;
-    this.rayCount = 1;
+    this.rayCount = 3;
     this.rayLength = 250;
-    this.raySpread = 2 * Math.PI;
+    this.raySpread = Math.PI / 2;
 
     this.rayWidth = 2;
     this.rayDefaultColor = "yellow";
@@ -69,7 +69,7 @@ export class Sensors {
     for (let i = 0; i < this.rayCount; i += 1) {
       const rayAngle =
         lerp(
-          this.raySpread / 26,
+          this.raySpread / 2,
           -this.raySpread / 2,
           this.rayCount === 1 ? 0.5 : i / (this.rayCount - 1)
         ) + this.ball.angle;
