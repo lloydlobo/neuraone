@@ -78,15 +78,14 @@ export class Ball {
   }
 
   draw(ctx: CanvasRenderingContext2D) {
+    if (this.sensors) {
+      this.sensors.draw(ctx);
+    }
     ctx.beginPath();
     ctx.fillStyle = this.color;
     ctx.moveTo(this.x, this.y);
     ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
     ctx.fill();
-
-    if (this.sensors) {
-      this.sensors.draw(ctx);
-    }
   }
 
   private move() {

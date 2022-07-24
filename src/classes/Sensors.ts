@@ -43,6 +43,10 @@ export class Sensors {
       const reading = this.getReading(this.rays[i], borders);
       this.readings.push(reading);
     }
+    console.log(
+      "file: Sensors.ts | line 45 | Sensors | update | this.readings",
+      this.readings
+    );
   }
 
   private getReading(

@@ -42,11 +42,10 @@ function loop() {
   ctx.save();
   // ctx.translate(TRANSLATE.x, TRANSLATE.y);
   borders.draw(ctx);
+  ctx.globalAlpha = 0.85;
+
   ball.draw(ctx);
-  ball.velX += Math.sin(0.03);
-  ball.velY += Math.sin(0.03);
-  // ball.sensors.draw(ctx);
-  ball.color = updateBallColor(30, -30);
+  ball.color = updateBallColor(30, -20);
 
   ctx.restore();
   requestAnimationFrame(loop);
