@@ -23,7 +23,7 @@ export const ctxNeuron = canvasNeuron.getContext(
   "2d"
 ) as CanvasRenderingContext2D;
 
-canvas.width = window.innerWidth / 2;
+canvas.width = (window.innerWidth * 2) / 3;
 canvas.height = window.innerHeight;
 canvasNeuron.width = window.innerWidth / 2;
 canvasNeuron.height = window.innerHeight / 2;
