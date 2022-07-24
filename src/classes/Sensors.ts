@@ -93,24 +93,21 @@ export class Sensors {
   } // end private castRays()
 
   draw(ctx: CanvasRenderingContext2D) {
-    const arrReadingEnd = [];
-    // const entries: number[][] = [];
     for (let i = 0; i < this.rayCount; i += 1) {
       let end = this.rays[i][1];
-      // let end = { x: this.rays[i][1].x, y: this.rays[i][1].y };
 
-      let reading;
       if (this.readings[i]) {
-        reading = this.readings[i];
-        for (const [key, value] of Object.entries(reading)) {
-          console.log(key, value, value.x, value.y);
-          end = { x: value.x, y: value.y };
+        let endX;
+        let endY;
+        for (const [key, value] of Object.entries(this.readings[i])) {
+          endX = value.x;
+          endY = value.y;
+          console.log(key, end);
         }
-        arrReadingEnd.push(reading);
-        // console.log("arrReadingEnd", arrReadingEnd);
+        if (endX && endY) {
+          end = { x: endX, y: endY };
+        }
       }
-      // console.log("end", end, end.x, end.y);
-      // arrReadingEnd.forEach((end) => { //   for (const [key, value] of Object.entries(end)) { //     console.log(key, value.x, value.y); //     entries.push([value.x, value.y]); //   } // });
 
       ctx.beginPath();
       ctx.lineWidth = this.rayWidth;
@@ -119,15 +116,12 @@ export class Sensors {
       ctx.lineTo(end.x, end.y);
       ctx.stroke();
 
-      // if (entries[i]) {
       ctx.beginPath();
       ctx.lineWidth = this.rayWidth;
       ctx.strokeStyle = this.rayDetectColor;
       ctx.moveTo(this.rays[i][1].x, this.rays[i][1].y);
       ctx.lineTo(end.x, end.y);
-      // ctx.lineTo(entries[i][0], entries[i][1]);
       ctx.stroke();
-      // }
     }
   } // end draw()
 
