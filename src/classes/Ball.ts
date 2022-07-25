@@ -8,6 +8,7 @@ type sType = {
   y: number;
   offset: number;
 }[];
+/* It's a ball that can move around the screen, and it has sensors that can detect the walls */
 export class Ball {
   acceleration: number;
 
@@ -45,6 +46,12 @@ export class Ball {
 
   y: number;
 
+  speedX: number;
+
+  speedY: number;
+
+  outputs: any[] = [];
+
   constructor(
     x: number,
     y: number,
@@ -62,6 +69,9 @@ export class Ball {
     this.velY = velY;
     this.size = size;
 
+    this.speedX = 0;
+    this.speedY = 0;
+
     this.color = color;
     this.damaged = false;
 
@@ -76,7 +86,7 @@ export class Ball {
     this.maxSpeed = maxSpeed;
     this.speed = 0;
     this.turningFactor = turningFactor;
-    this.useBrain = controlsType === "AI";
+    this.useBrain = controlsType === "AI" || controlsType === "RANDOM";
   }
 
   update(canvas: HTMLCanvasElement, borders: { x: number; y: number }[][]) {
@@ -90,18 +100,34 @@ export class Ball {
       // console.log(this.sensors.readings);
       this.getOffsets(arrayOffsets);
 
-      const outputs = Network.feedForward(arrayOffsets, this.brain);
+      // const outputs = Network.feedForward(arrayOffsets, this.brain);
+      this.outputs = Network.feedForward(arrayOffsets, this.brain);
+
       if (this.useBrain) {
         const index = 0;
-        let [up, left, right, down] = outputs;
-        up = outputs[index];
-        left = outputs[index + 1];
-        right = outputs[index + 2];
-        down = outputs[index + 3];
-        this.controls.up = up;
-        this.controls.left = left;
-        this.controls.right = right;
-        this.controls.down = down;
+        let [up, left, right, down] = this.outputs;
+        up = this.outputs[index];
+        left = this.outputs[index + 1];
+        right = this.outputs[index + 2];
+        down = this.outputs[index + 3];
+
+        // eslint-disable-next-line no-console
+        console.log(up, left, right, down);
+        // this.speedX = 0;
+        // this.speedY = 0;
+        if (this.controlsType === "RANDOM") {
+          const flipX = this.velX > 0 ? 1 : -1;
+          const flipY = this.velY > 0 ? 1 : -1;
+          this.speedX = flipX === 1 ? right * 1 : left * -1;
+          this.speedY = flipY === 1 ? down * 1 : up * -1;
+          // this.speedX = up * flipX * Math.sin(left + right);
+          // this.speedY = down * flipY * Math.cos(left + right);
+        } else if (this.controlsType === "AI") {
+          this.controls.up = up;
+          this.controls.left = left;
+          this.controls.right = right;
+          this.controls.down = down;
+        }
         // this.controls.up = outputs[0]; this.controls.left = outputs[1]; this.controls.right = outputs[2]; this.controls.down = outputs[3];
       }
     }
@@ -119,13 +145,28 @@ export class Ball {
   }
 
   private move() {
+    const flipX = this.velX > 0 ? 1 : -1;
+    const flipY = this.velY > 0 ? 1 : -1;
     if (this.controlsType === "KEYS" || this.controlsType === "AI") {
       this.moveManualControls();
       this.x -= Math.sin(this.angle) * this.speed;
       this.y -= Math.cos(this.angle) * this.speed;
     } else if (this.controlsType === "RANDOM") {
-      this.x += this.velX;
-      this.y += this.velY;
+      if (this.useBrain) {
+        if (this.outputs) {
+          if (this.speedX !== 0 && this.speedY !== 0) {
+            this.x -=
+              Math.sin(this.angle) * this.velX * this.speedX +
+              flipX * this.speedX * 4;
+            this.y -=
+              Math.cos(this.angle) * this.velY * this.speedY +
+              flipY * this.speedY * 4;
+          } else {
+            this.x += this.velX;
+            this.y += this.velY;
+          }
+        }
+      }
     }
   }
 

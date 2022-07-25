@@ -88,12 +88,12 @@ export class Sensors {
       if (this.readings[i]) {
         let endX;
         let endY;
-        // eslint-disable-next-line no-restricted-syntax
+        // eslint-disable-next-line no-restricted-syntax, no-unused-vars
         for (const [key, value] of Object.entries(this.readings[i])) {
           endX = value.x;
           endY = value.y;
           // eslint-disable-next-line no-console
-          console.log(key, end);
+          // console.log(key, end);
         }
         if (endX && endY) {
           end = { x: endX, y: endY };
