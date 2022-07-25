@@ -1,5 +1,6 @@
 import "./style.css";
 import * as dat from "dat.gui"; // dat exported as a namespace
+
 import { createApp } from "./generators/createApp";
 import { createBorders } from "./generators/createBorders";
 import { controls } from "./constants/BALL";
@@ -22,8 +23,15 @@ export const borders = createBorders();
 export const ball = createNewBall(controls.AI);
 (async() => { if (!ball) throw new Error(); })(); // prettier-ignore
 
-function main() {
-  /* Setting the speed of the ball to the increment of the controller. */
+/**
+ * It loops the canvas and canvasNeuron context and feedForward the network
+ * @returns {void}
+ */
+function main(): void {
+  /**
+   * Setting the speed of the ball to the increment of the controller.
+   * @returns {void}
+   */
   incrementControllerSpeed();
   /**
    * Loops canvas and canvasNeuron context and feedForward the network
@@ -31,7 +39,11 @@ function main() {
    * @returns {void}
    */
   loop();
-  // Creating a GUI and a subfolder.
+  /**
+   * Creating a GUI and a subfolder.
+   * @param {{ GUI: new () => any }} dat
+   * @returns {void}
+   */
   addDatGuiFolders(dat);
 }
 

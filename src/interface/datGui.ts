@@ -20,7 +20,7 @@ export const guiBgColor = {
   alpha: 0.4,
 };
 
-export function addDatGuiFolders(dat: { GUI: new () => any }) {
+export function addDatGuiFolders(dat: { GUI: new () => any }): void {
   const gui = new dat.GUI();
   const guiFolderBall = gui.addFolder("Balls");
   const guiFolderVortex = gui.addFolder("Vortex");
