@@ -20,14 +20,27 @@ export class Sensors {
   rayDetectColor: string;
 
   readings: { x: number; y: number; offset: number }[][];
+  sensorType: string;
 
-  constructor(ball: Ball) {
+  constructor(ball: Ball, sensorType = "DRIVE") {
     this.ball = ball;
-    this.rayCount = 3;
-    this.rayLength = 250;
-    this.raySpread = Math.PI / 2;
+    this.sensorType = sensorType;
 
+    const countRandomSensor = 12;
+    const countDriveAIKeysSensor = 3;
+    this.rayCount =
+      this.sensorType !== "RANDOM" ? countRandomSensor : countDriveAIKeysSensor;
+    const innerRayRatio =
+      getInnerRatioConverterForEvenRaysInUnitCircle(countRandomSensor); // 330/180 ~~~ radDiff/(Math.Pi)
+
+    const raySpreadRandom =
+      this.rayCount % 2 === 0 ? Math.PI * innerRayRatio : Math.PI;
+    this.raySpread =
+      this.sensorType !== "RANDOM" ? raySpreadRandom : Math.PI / 2;
+
+    this.rayLength = 150;
     this.rayWidth = 2;
+
     this.rayDefaultColor = "yellow";
     this.rayDetectColor = "red";
 
@@ -183,4 +196,31 @@ export class Sensors {
     this.getArrTouchesIntersected(borders, ray, arrayTouches); // for loop
     return arrayTouches;
   }
+}
+
+/**
+ * Gets angle ratio to convert even rays for 360Deg coverage like a clock
+ *
+ * @param {number} countRandomSensor
+ * @returns {number} innerRayRatio
+ *
+ * @example
+ *  - (360 - 360/12) = 330 ; 5.75959 radian
+ *  - 180Deg × π/180 = 3.14159Rad
+ *  - 55/30 = 1.8333333333 => 55*2*3/30*2*3 => 330/180
+ *  - 5.75959/3.14159 = 1.8333359859 * Math.PI
+ *
+ */
+function getInnerRatioConverterForEvenRaysInUnitCircle(
+  countRandomSensor: number
+): number {
+  const angleUnitCircle = 2 * 180; // 360Deg
+  // 360/12 = 30
+  const angleForEachInnerRay = angleUnitCircle / countRandomSensor;
+  // 360 - 30 = 330
+  const angleDiffOuter = angleUnitCircle - angleForEachInnerRay;
+  // 330/180 ~~~ radDiff/(Math.Pi)
+  const innerRayRatio = angleDiffOuter / 180;
+
+  return innerRayRatio;
 }
