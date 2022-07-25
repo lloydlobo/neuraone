@@ -5,6 +5,7 @@ import { Ball } from "./classes/Ball";
 import { createBorders } from "./generators/createBorders";
 import { updateBallColor } from "./generators/updateBallColor";
 import { Visualizer } from "./Visualizer";
+import { fillCanvas } from "./generators/fillCanvas";
 
 document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
   <canvas id="canvasBall"></canvas>
@@ -48,25 +49,30 @@ const ball = new Ball(
   "KEYS"
 );
 
-function loop(time: number) {
+function loop(time?: number) {
   ball.update(canvas, borders.borders);
-  // fillCanvas(); // animated canvas fill LATER
+  canvas.height = window.innerHeight;
+  canvasNeuron.height = window.innerHeight;
+
   ctx.fillStyle = "#00000045";
+  fillCanvas(ctx, canvas, Math.abs(ball.speed) * 2); // animated canvas fill LATER
+  fillCanvas(ctxNeuron, canvasNeuron, 50); // animated canvas fill LATER
   ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctxNeuron.fillRect(0, 0, canvasNeuron.width, canvasNeuron.height);
   ctx.save();
   // ctx.translate(TRANSLATE.x, TRANSLATE.y);
   borders.draw(ctx);
-  ctx.globalAlpha = 0.85;
+  ctx.globalAlpha = 0.95;
 
   ball.draw(ctx);
   ball.color = updateBallColor(30, -20);
 
+  ctx.globalAlpha = 1;
   ctx.restore();
-
-  ctxNeuron.lineDashOffset = -time / 50;
+  ctxNeuron.lineDashOffset = (-1 * time!) / 50;
   Visualizer.drawNetwork(ctxNeuron, ball.brain);
 
-  requestAnimationFrame(loop);
   CONTROLLER.increment += WAVE.frequency;
+  requestAnimationFrame(loop);
 }
-loop(1);
+loop();

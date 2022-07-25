@@ -38,13 +38,13 @@ export class Sensors {
   update(borders: { x: number; y: number }[][]) {
     this.castRays();
     this.readings = [];
-
     for (let i = 0; i < this.rays.length; i += 1) {
+      console.log(this.rays, this.rays[i], i);
       const reading = this.getReading(this.rays[i], borders);
-      if (!reading) {
-        return;
-      }
-      this.readings.push(reading);
+      // if (!reading) {
+      // return null; // this is iterating only once
+      // }
+      this.readings.push(reading!);
     }
     // console.log(
     //   "file: Sensors.ts | line 45 | Sensors | update | this.readings",
@@ -56,6 +56,7 @@ export class Sensors {
     ray: { x: number; y: number }[],
     borders: { x: number; y: number }[][]
   ): { x: number; y: number; offset: number }[] | null {
+    console.log(ray);
     let arrayTouches = this.pushIntersectedTouch(borders, ray); // for loop
 
     if (arrayTouches.length === 0) {

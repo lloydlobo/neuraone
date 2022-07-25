@@ -87,6 +87,7 @@ export class Ball {
     const arrayOffsets: number[][] = [];
     if (this.sensors) {
       this.sensors.update(borders);
+      // console.log(this.sensors.readings);
       this.getOffsets(arrayOffsets);
 
       const outputs = Network.feedForward(arrayOffsets, this.brain);
@@ -98,19 +99,6 @@ export class Ball {
           this.controls.down = outputs[3];
         }
       }
-      // else if (this.controls.isActive) {
-      //   // this.move();
-      //   // this.controls.up = false;
-      //   // this.controls.left = false;
-      //   // this.controls.right = false;
-      //   // this.controls.down = false;
-      // }
-      // //  else {
-      //   this.controls.up = false;
-      //   this.controls.left = false;
-      //   this.controls.right = false;
-      //   this.controls.down = false;
-      // }
     }
   }
 
@@ -176,7 +164,7 @@ export class Ball {
       for (const [key, value] of Object.entries(s)) {
         if (value) {
           offset = value.offset;
-          console.log(key);
+          console.log(key, offset);
         }
       }
       if (offset) {
@@ -184,12 +172,13 @@ export class Ball {
       }
       return result;
     };
+
     const offsets = this.sensors.readings.map((s): number =>
       s == null ? 0 : 1 - offsetWhat(s)
     );
+
     if (offsets) {
       arrayOffsets.push(offsets);
-      console.log(offsets);
     }
   }
 }

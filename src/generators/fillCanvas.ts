@@ -1,7 +1,11 @@
-import { ctx, canvas } from "../main";
+// import { ctx, canvas } from "../main";
 import { HSLA, CONTROLLER, WAVE } from "../constants/constants";
 
-export function fillCanvas() {
+export function fillCanvas(
+  ctx: CanvasRenderingContext2D,
+  canvas: HTMLCanvasElement,
+  speed: number
+) {
   ctx.fillStyle = `hsla(
     ${
       HSLA.hue +
@@ -9,7 +13,7 @@ export function fillCanvas() {
       WAVE.amplitude * CONTROLLER.increment
     },
     ${HSLA.sat}%,
-    ${HSLA.light}%,
+    ${HSLA.light - speed}%,
     ${HSLA.alpha}
     )`;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
