@@ -5,7 +5,7 @@ import { lerp } from "./utils/lerp";
 
 export class Visualizer {
   static drawNetwork(ctx: CanvasRenderingContext2D, network: Network) {
-    const margin = 50;
+    const margin = 40;
     const left = margin;
     const top = margin;
     const width = ctx.canvas.width - margin * 2;
@@ -19,10 +19,10 @@ export class Visualizer {
         lerp(
           height - levelHeight,
           0,
-          network.levels.length == 1 ? 0.5 : i / (network.levels.length - 1)
-        );
+          network.levels.length === 1 ? 0.5 : i / (network.levels.length - 1)
+        ); // 1st @param => want bottom most level to start at y value that still can fit in screen
 
-      ctx.setLineDash([7, 3]);
+      ctx.setLineDash([9, 30]);
       Visualizer.drawLevel(
         ctx,
         network.levels[i],
@@ -49,8 +49,8 @@ export class Visualizer {
 
     const { inputs, outputs, weights, biases } = level;
 
-    for (let i = 0; i < inputs.length; i++) {
-      for (let j = 0; j < outputs.length; j++) {
+    for (let i = 0; i < inputs.length; i += 1) {
+      for (let j = 0; j < outputs.length; j += 1) {
         ctx.beginPath();
         ctx.moveTo(Visualizer.getNodeX(inputs, i, left, right), bottom);
         ctx.lineTo(Visualizer.getNodeX(outputs, j, left, right), top);
@@ -61,19 +61,21 @@ export class Visualizer {
     }
 
     const nodeRadius = 18;
-    for (let i = 0; i < inputs.length; i++) {
+    for (let i = 0; i < inputs.length; i += 1) {
+      // console.log(inputs);
       const x = Visualizer.getNodeX(inputs, i, left, right);
       ctx.beginPath();
       ctx.arc(x, bottom, nodeRadius, 0, Math.PI * 2);
-      ctx.fillStyle = "black";
+      ctx.fillStyle = `hsla(120, 30%, 30%, 0.15)`;
       ctx.fill();
       ctx.beginPath();
       ctx.arc(x, bottom, nodeRadius * 0.6, 0, Math.PI * 2);
+      // ctx.fillStyle = `hsla(0, 50%, 30%, 1.0)`;
       ctx.fillStyle = getRGBA(inputs[i]);
       ctx.fill();
     }
 
-    for (let i = 0; i < outputs.length; i++) {
+    for (let i = 0; i < outputs.length; i += 1) {
       const x = Visualizer.getNodeX(outputs, i, left, right);
       ctx.beginPath();
       ctx.arc(x, top, nodeRadius, 0, Math.PI * 2);
