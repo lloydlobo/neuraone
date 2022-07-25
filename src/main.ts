@@ -37,6 +37,4 @@ try {
   if (appIsCreated) main();
 } catch (error) {
   if (error) throw new Error(`${error}`);
-} finally {
-  main();
 }
