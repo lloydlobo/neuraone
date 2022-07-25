@@ -51,8 +51,8 @@ const ball = new Ball(
 
 function loop(time?: number) {
   ball.update(canvas, borders.borders);
-  canvas.height = window.innerHeight;
-  canvasNeuron.height = window.innerHeight;
+  // canvas.height = window.innerHeight;
+  // canvasNeuron.height = window.innerHeight;
 
   ctx.fillStyle = "#00000045";
   fillCanvas(ctx, canvas, Math.abs(ball.speed) * 2); // animated canvas fill LATER

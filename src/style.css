@@ -14,9 +14,10 @@
 body {
   min-height: 100vh;
   margin: 0;
-  /* background: darkgray; */
-  overflow: hidden;
+  background: darkgray;
+  /* overflow: hidden; */
   /* display: flex; */
+  overflow-x: hidden;
   /* justify-content: center; */
   /* align-items: center; */
 }
@@ -43,15 +44,46 @@ button:hover {
   min-height: 100vh;
   width: 100%;
   object-fit: contain;
+  /* grid-column-start: 3; */
+  /* grid-column-end: -1; */
+  grid-row-start: 2;
+  grid-row-end: -1;
 }
 
 #canvasBall {
   background: lightgray;
   grid-column-start: 1;
+  min-height: 100vh;
+  width: 100%;
+  object-fit: contain;
   grid-column-end: 3;
+  grid-row-start: 1;
+  grid-row-end: 2;
 }
 
 #app {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr, minmax(33%, 1fr);
+  /* grid-template-rows: 1fr, auto; */
+}
+
+@media screen and (min-width: 768px) {
+  #app {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(33%, 1fr));
+    grid-template-rows: 1fr, minmax(33%, 1fr);
+  }
+
+  #canvasBall {
+    grid-row-start: 1;
+    grid-row-end: 2;
+  }
+
+  #canvasNeuron {
+    grid-column-start: 3;
+    grid-column-end: -1;
+    grid-row-start: 1;
+    grid-row-end: 2;
+  }
 }
