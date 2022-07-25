@@ -46,7 +46,7 @@ const ball = new Ball(
   2,
   10,
   BALL_PROP.color,
-  "KEYS"
+  "AI"
 );
 
 function loop(time?: number) {

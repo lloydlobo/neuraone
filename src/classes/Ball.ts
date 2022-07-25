@@ -76,7 +76,7 @@ export class Ball {
     this.maxSpeed = maxSpeed;
     this.speed = 0;
     this.turningFactor = turningFactor;
-    this.useBrain = true || controlsType === "AI";
+    this.useBrain = controlsType === "AI";
   }
 
   update(canvas: HTMLCanvasElement, borders: { x: number; y: number }[][]) {
@@ -91,13 +91,11 @@ export class Ball {
       this.getOffsets(arrayOffsets);
 
       const outputs = Network.feedForward(arrayOffsets, this.brain);
-      if (!this.controls.isActive) {
-        if (this.useBrain) {
-          this.controls.up = outputs[0];
-          this.controls.left = outputs[1];
-          this.controls.right = outputs[2];
-          this.controls.down = outputs[3];
-        }
+      if (this.useBrain) {
+        this.controls.up = outputs[0];
+        this.controls.left = outputs[1];
+        this.controls.right = outputs[2];
+        this.controls.down = outputs[3];
       }
     }
   }
@@ -114,11 +112,11 @@ export class Ball {
   }
 
   private move() {
-    if (this.controlsType === "KEYS") {
+    if (this.controlsType === "KEYS" || this.controlsType === "AI") {
       this.moveManualControls();
       this.x -= Math.sin(this.angle) * this.speed;
       this.y -= Math.cos(this.angle) * this.speed;
-    } else if (this.controlsType === "AI") {
+    } else if (this.controlsType === "RANDOM") {
       this.x += this.velX;
       this.y += this.velY;
     }

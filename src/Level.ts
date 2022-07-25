@@ -9,6 +9,7 @@ export class Level {
     this.biases = new Array(outputCount);
 
     this.weights = [];
+
     for (let i = 0; i < inputCount; i += 1) {
       this.weights[i] = new Array(outputCount);
     }
@@ -20,13 +21,11 @@ export class Level {
     for (let i = 0; i < level.inputs.length; i += 1) {
       for (let j = 0; j < level.outputs.length; j += 1) {
         level.weights[i][j] = Math.random() * 2 - 1;
-        // level.weights[i][j] = 1;
       }
     }
 
     for (let i = 0; i < level.biases.length; i += 1) {
       level.biases[i] = Math.random() * 2 - 1;
-      // level.biases[i] = 1;
     }
   }
 
