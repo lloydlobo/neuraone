@@ -1,6 +1,6 @@
 import { Ball } from "../classes/Ball";
 import { x, y, velX, velY, size, color, controls } from "../constants/BALL";
-import { canvas } from "../main";
+import { canvas } from "../appIsCreated";
 
 /**
  * It creates a new ball object with the given parameters

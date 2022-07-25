@@ -1,4 +1,4 @@
-import { canvas, canvasNeuron } from "../main";
+import { canvas, canvasNeuron } from "../appIsCreated";
 
 export async function setCanvasDimensions() {
   canvas.width = (window.innerWidth * 2) / 3;
