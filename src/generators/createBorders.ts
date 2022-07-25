@@ -1,5 +1,5 @@
 import { Borders } from "../classes/Borders";
-import { canvas } from "../appIsCreated";
+import { canvas } from "./appIsCreated";
 
 export function createBorders(scale = 0.95) {
   const BORDERS = {

@@ -1,7 +1,13 @@
 import { updateBallColor } from "../generators/updateBallColor";
 import { Visualizer } from "../network/Visualizer";
 import { fillCtx } from "../generators/fillCtx";
-import { ball, borders, canvas, ctx, ctxNeuron } from "../appIsCreated";
+import {
+  ball,
+  borders,
+  canvas,
+  ctx,
+  ctxNeuron,
+} from "../generators/appIsCreated";
 import { CONTROLLER, WAVE } from "../constants/constants";
 
 /**
