@@ -1,7 +1,7 @@
 import "./style.css";
 import * as dat from "dat.gui"; // dat exported as a namespace
 
-import { addDatGuiFolders } from "./interface/DatGui";
+import { addDatGuiFolders } from "./interface/datGui";
 import { appIsCreated } from "./generators/appIsCreated";
 import { incrementControllerSpeed } from "./functions/incrementControllerSpeed";
 import { loop } from "./logic/loop";
