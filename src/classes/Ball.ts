@@ -87,14 +87,14 @@ export class Ball {
     const arrayOffsets: number[][] = [];
     if (this.sensors) {
       this.sensors.update(borders);
-      // this.getOffsets();
+      this.getOffsets(arrayOffsets);
 
       const outputs = Network.feedForward(arrayOffsets, this.brain);
       if (!this.controls.isActive) {
         if (this.useBrain) {
-          // this.controls.up = outputs[0];
-          // this.controls.left = outputs[1];
-          // this.controls.right = outputs[2];
+          this.controls.up = outputs[0];
+          this.controls.left = outputs[1];
+          this.controls.right = outputs[2];
           this.controls.down = outputs[3];
         }
       }
