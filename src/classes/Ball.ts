@@ -92,10 +92,17 @@ export class Ball {
 
       const outputs = Network.feedForward(arrayOffsets, this.brain);
       if (this.useBrain) {
-        this.controls.up = outputs[0];
-        this.controls.left = outputs[1];
-        this.controls.right = outputs[2];
-        this.controls.down = outputs[3];
+        const index = 0;
+        let [up, left, right, down] = outputs;
+        up = outputs[index];
+        left = outputs[index + 1];
+        right = outputs[index + 2];
+        down = outputs[index + 3];
+        this.controls.up = up;
+        this.controls.left = left;
+        this.controls.right = right;
+        this.controls.down = down;
+        // this.controls.up = outputs[0]; this.controls.left = outputs[1]; this.controls.right = outputs[2]; this.controls.down = outputs[3];
       }
     }
   }
@@ -155,14 +162,17 @@ export class Ball {
       this.y = -this.size + canvas.height;
     }
   }
+
   private getOffsets(arrayOffsets: number[][]) {
     const offsetWhat = (s: sType) => {
       let offset;
       let result = 0;
+      // eslint-disable-next-line no-restricted-syntax, no-unused-vars
       for (const [key, value] of Object.entries(s)) {
         if (value) {
           offset = value.offset;
-          console.log(key, offset);
+          // eslint-disable-next-line no-console
+          console.log(key);
         }
       }
       if (offset) {

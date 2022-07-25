@@ -1,8 +1,13 @@
+/* eslint-disable no-param-reassign */
 export class Level {
   inputs;
+
   outputs;
+
   biases;
+
   weights;
+
   constructor(inputCount: number, outputCount: number) {
     this.inputs = new Array(inputCount);
     this.outputs = new Array(outputCount);

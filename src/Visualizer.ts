@@ -13,7 +13,7 @@ export class Visualizer {
 
     const levelHeight = height / network.levels.length;
 
-    for (let i = network.levels.length - 1; i >= 0; i--) {
+    for (let i = network.levels.length - 1; i >= 0; i -= 1) {
       const levelTop =
         top +
         lerp(
@@ -30,7 +30,7 @@ export class Visualizer {
         levelTop,
         width,
         levelHeight,
-        i == network.levels.length - 1 ? ["🠉", "🠈", "🠊", "🠋"] : []
+        i === network.levels.length - 1 ? ["🠉", "🠈", "🠊", "🠋"] : []
       );
     }
   }
@@ -100,7 +100,7 @@ export class Visualizer {
         ctx.textBaseline = "middle";
         ctx.fillStyle = "black";
         ctx.strokeStyle = "white";
-        ctx.font = nodeRadius * 1.5 + "px Arial";
+        ctx.font = `${nodeRadius * 1.5}px Arial`;
         ctx.fillText(outputLabels[i], x, top + nodeRadius * 0.1);
         ctx.lineWidth = 0.5;
         ctx.strokeText(outputLabels[i], x, top + nodeRadius * 0.1);
@@ -117,7 +117,7 @@ export class Visualizer {
     return lerp(
       left,
       right,
-      nodes.length == 1 ? 0.5 : index / (nodes.length - 1)
+      nodes.length === 1 ? 0.5 : index / (nodes.length - 1)
     );
   }
 }

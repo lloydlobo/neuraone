@@ -24,6 +24,10 @@ export class Controls {
       case "AI": {
         this.up = true;
         this.left = true;
+        break;
+      }
+      default: {
+        break;
       }
     } // switch (controlType)
   } // constructor()

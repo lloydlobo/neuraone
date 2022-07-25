@@ -1,6 +1,7 @@
-import { getIntersection } from "../utils/getIntersection";
 import { lerp } from "../utils/lerp";
 import { Ball } from "./Ball";
+import { getAngleRatioForFullSpread } from "./getAngleRatioForFullSpread";
+import { getReading } from "./getReading";
 
 export class Sensors {
   rayCount: number;
@@ -20,6 +21,7 @@ export class Sensors {
   rayDetectColor: string;
 
   readings: { x: number; y: number; offset: number }[][];
+
   sensorType: string;
 
   constructor(ball: Ball, sensorType = "DRIVE") {
@@ -30,8 +32,7 @@ export class Sensors {
     const countDriveAIKeysSensor = 3;
     this.rayCount =
       this.sensorType !== "RANDOM" ? countRandomSensor : countDriveAIKeysSensor;
-    const innerRayRatio =
-      getInnerRatioConverterForEvenRaysInUnitCircle(countRandomSensor); // 330/180 ~~~ radDiff/(Math.Pi)
+    const innerRayRatio = getAngleRatioForFullSpread(countRandomSensor); // 330/180 ~~~ radDiff/(Math.Pi)
 
     const raySpreadRandom =
       this.rayCount % 2 === 0 ? Math.PI * innerRayRatio : Math.PI;
@@ -52,35 +53,9 @@ export class Sensors {
     this.castRays();
     this.readings = [];
     for (let i = 0; i < this.rays.length; i += 1) {
-      console.log(this.rays, this.rays[i], i);
-      const reading = this.getReading(this.rays[i], borders);
-      // if (!reading) {
-      // return null; // this is iterating only once
-      // }
+      const reading = getReading(this.rays[i], borders);
       this.readings.push(reading!);
     }
-    // console.log(
-    //   "file: Sensors.ts | line 45 | Sensors | update | this.readings",
-    //   this.readings
-    // );
-  }
-
-  private getReading(
-    ray: { x: number; y: number }[],
-    borders: { x: number; y: number }[][]
-  ): { x: number; y: number; offset: number }[] | null {
-    console.log(ray);
-    let arrayTouches = this.pushIntersectedTouch(borders, ray); // for loop
-
-    if (arrayTouches.length === 0) {
-      // no intersection ==> break function call
-      return null;
-    } else {
-      const arrayOffsets = this.mapArrayTouchesOffsets(arrayTouches);
-      const offsetMinimum = Math.min(...arrayOffsets) as number; // spread
-
-      return this.findArrayMinTouchOffset(arrayTouches, offsetMinimum);
-    } // end of if else
   }
 
   private castRays() {
@@ -113,9 +88,11 @@ export class Sensors {
       if (this.readings[i]) {
         let endX;
         let endY;
+        // eslint-disable-next-line no-restricted-syntax
         for (const [key, value] of Object.entries(this.readings[i])) {
           endX = value.x;
           endY = value.y;
+          // eslint-disable-next-line no-console
           console.log(key, end);
         }
         if (endX && endY) {
@@ -138,89 +115,4 @@ export class Sensors {
       ctx.stroke();
     }
   } // end draw()
-
-  // #1 Map out offsets to array
-  private mapArrayTouchesOffsets(
-    arrayTouches: { x: number; y: number; offset: number }[]
-  ) {
-    const arrayOffsets = [] as number[];
-    for (let i = 0; i < arrayTouches.length; i += 1) {
-      arrayOffsets.push(arrayTouches[i].offset);
-    }
-    return arrayOffsets;
-  }
-
-  // #3 Find touches with minimum offset
-  private findArrayMinTouchOffset(
-    arrayTouches: { x: number; y: number; offset: number }[],
-    offsetMinimum: number
-  ) {
-    const arrayMinTouchOffset = [] as {
-      x: number;
-      y: number;
-      offset: number;
-    }[];
-    for (let i = 0; i < arrayTouches.length; i += 1) {
-      if (arrayTouches[i].offset === offsetMinimum) {
-        arrayMinTouchOffset.push(arrayTouches[i]);
-      }
-    }
-
-    return arrayMinTouchOffset;
-  }
-
-  private getArrTouchesIntersected(
-    borders: { x: number; y: number }[][],
-    ray: { x: number; y: number }[],
-    arrayTouches: { x: number; y: number; offset: number }[]
-  ) {
-    for (let i = 0; i < borders.length; i += 1) {
-      const touch = getIntersection(
-        ray[0],
-        ray[1],
-        borders[i][0],
-        borders[i][1]
-      ) as { x: number; y: number; offset: number };
-
-      if (touch) {
-        arrayTouches.push(touch);
-      }
-    }
-  }
-
-  private pushIntersectedTouch(
-    borders: { x: number; y: number }[][],
-    ray: { x: number; y: number }[]
-  ) {
-    let arrayTouches = [] as { x: number; y: number; offset: number }[];
-    this.getArrTouchesIntersected(borders, ray, arrayTouches); // for loop
-    return arrayTouches;
-  }
-}
-
-/**
- * Gets angle ratio to convert even rays for 360Deg coverage like a clock
- *
- * @param {number} countRandomSensor
- * @returns {number} innerRayRatio
- *
- * @example
- *  - (360 - 360/12) = 330 ; 5.75959 radian
- *  - 180Deg × π/180 = 3.14159Rad
- *  - 55/30 = 1.8333333333 => 55*2*3/30*2*3 => 330/180
- *  - 5.75959/3.14159 = 1.8333359859 * Math.PI
- *
- */
-function getInnerRatioConverterForEvenRaysInUnitCircle(
-  countRandomSensor: number
-): number {
-  const angleUnitCircle = 2 * 180; // 360Deg
-  // 360/12 = 30
-  const angleForEachInnerRay = angleUnitCircle / countRandomSensor;
-  // 360 - 30 = 330
-  const angleDiffOuter = angleUnitCircle - angleForEachInnerRay;
-  // 330/180 ~~~ radDiff/(Math.Pi)
-  const innerRayRatio = angleDiffOuter / 180;
-
-  return innerRayRatio;
 }
