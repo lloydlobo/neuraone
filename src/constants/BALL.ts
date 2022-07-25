@@ -1,4 +1,4 @@
-import { HSLA } from "./constants/constants";
+import { HSLA } from "./constants";
 
 const BALL = {
   x: (CANVAS: HTMLCanvasElement) => CANVAS.width / 2,

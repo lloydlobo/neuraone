@@ -1,7 +1,7 @@
 import { Level } from "./Level";
 import { Network } from "./Network";
-import { getRGBA } from "./utils/getRGBA";
-import { lerp } from "./utils/lerp";
+import { getRGBA } from "../utils/getRGBA";
+import { lerp } from "../utils/lerp";
 
 export class Visualizer {
   static drawNetwork(ctx: CanvasRenderingContext2D, network: Network) {

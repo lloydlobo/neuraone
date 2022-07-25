@@ -1,7 +1,7 @@
 import { lerp } from "../utils/lerp";
 import { Ball } from "./Ball";
-import { getAngleRatioForFullSpread } from "./getAngleRatioForFullSpread";
-import { getReading } from "./getReading";
+import { getAngleRatioForFullSpread } from "../functions/getAngleRatioForFullSpread";
+import { getReading } from "../functions/getReading";
 
 export class Sensors {
   rayCount: number;
@@ -93,7 +93,7 @@ export class Sensors {
           endX = value.x;
           endY = value.y;
           // eslint-disable-next-line no-console
-          // console.log(key, end);
+          console.log(key, end);
         }
         if (endX && endY) {
           end = { x: endX, y: endY };

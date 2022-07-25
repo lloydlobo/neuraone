@@ -19,5 +19,6 @@ export function createBorders(scale = 0.95) {
     BORDERS.laneCountX,
     BORDERS.laneCountY
   );
+
   return borders;
 }

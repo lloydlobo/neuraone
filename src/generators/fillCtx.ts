@@ -1,5 +1,5 @@
-import { fillCanvas } from "./generators/fillCanvas";
-import { ball, canvas, canvasNeuron, ctx, ctxNeuron } from "./main";
+import { fillCanvas } from "./fillCanvas";
+import { ball, canvas, canvasNeuron, ctx, ctxNeuron } from "../main";
 
 export function fillCtx() {
   ctx.fillStyle = "#00000045";

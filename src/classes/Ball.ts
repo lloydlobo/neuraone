@@ -1,5 +1,5 @@
 // import { lerp } from "../utils/lerp";
-import { Network } from "../Network";
+import { Network } from "../network/Network";
 import { Controls } from "./Controls";
 import { Sensors } from "./Sensors";
 
@@ -232,4 +232,4 @@ export class Ball {
   }
 }
 
-// private getAngle() { //   let endY = 0; //   let endX = 0; //   const flipX = this.velX > 0 ? 1 : -1; //   const flipY = this.velY > 0 ? 1 : -1; //   endY = //     this.y * flipY - //     Math.cos(this.angle * flipY) * this.sensors.rayLength * flipY; //   endX = //     this.x * flipX - //     Math.sin(this.angle * flipX) * this.sensors.rayLength * flipX; //   // TODO Add flip feature //   const deltaY = endY - this.y; //   const deltaX = endX - this.x; //   // Vector 2 is now relative to origin, the angle is the same, we have just transformed it to use the origin.  //   // https://stackoverflow.com/a/62296196 //    let angleInDegrees = (Math.atan2(deltaY, deltaX) * 180) / 3.141; //   let angle = (Math.atan2(deltaY * flipY, deltaX * flipX) * 180) / 3.141; //   angle *= -1; // Y axis is inverted in computer windows, Y goes down, so invert the angle.  //   console.log(this.angle, this.x, this.y, this.velX, this.velY); //   return (parseFloat(angle.toFixed(4)) / 180) * 3.141; // }
+// private getAngle() { //   let endY = 0; //   let endX = 0; //   const flipX = this.velX > 0 ? 1 : -1; //   const flipY = this.velY > 0 ? 1 : -1; //   endY = //     this.y * flipY - //     Math.cos(this.angle * flipY) * this.sensors.rayLength * flipY; //   endX = //     this.x * flipX - //     Math.sin(this.angle * flipX) * this.sensors.rayLength * flipX; //   //  Add flip feature //   const deltaY = endY - this.y; //   const deltaX = endX - this.x; //   // Vector 2 is now relative to origin, the angle is the same, we have just transformed it to use the origin.  //   // https://stackoverflow.com/a/62296196 //    let angleInDegrees = (Math.atan2(deltaY, deltaX) * 180) / 3.141; //   let angle = (Math.atan2(deltaY * flipY, deltaX * flipX) * 180) / 3.141; //   angle *= -1; // Y axis is inverted in computer windows, Y goes down, so invert the angle.  //   console.log(this.angle, this.x, this.y, this.velX, this.velY); //   return (parseFloat(angle.toFixed(4)) / 180) * 3.141; // }
