@@ -176,6 +176,7 @@ export class Ball {
       for (const [key, value] of Object.entries(s)) {
         if (value) {
           offset = value.offset;
+          console.log(key);
         }
       }
       if (offset) {
