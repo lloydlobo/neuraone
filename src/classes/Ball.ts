@@ -1,11 +1,19 @@
 // import { lerp } from "../utils/lerp";
+import { Network } from "../Network";
 import { Controls } from "./Controls";
 import { Sensors } from "./Sensors";
 
+type sType = {
+  x: number;
+  y: number;
+  offset: number;
+}[];
 export class Ball {
   acceleration: number;
 
   angle: number;
+
+  brain: Network;
 
   color: string;
 
@@ -26,6 +34,8 @@ export class Ball {
   speed: number;
 
   turningFactor: number;
+
+  useBrain: boolean;
 
   velX: number;
 
@@ -58,6 +68,7 @@ export class Ball {
     this.controlsType = controlsType;
     this.controls = new Controls(this.controlsType);
     this.sensors = new Sensors(this);
+    this.brain = new Network([this.sensors.rayCount, 6, 4]);
 
     this.acceleration = 0.2;
     this.angle = 0;
@@ -65,6 +76,7 @@ export class Ball {
     this.maxSpeed = maxSpeed;
     this.speed = 0;
     this.turningFactor = turningFactor;
+    this.useBrain = controlsType === "AI";
   }
 
   update(canvas: HTMLCanvasElement, borders: { x: number; y: number }[][]) {
@@ -72,8 +84,19 @@ export class Ball {
       this.checkBounds(canvas);
       this.move();
     }
+    const arrayOffsets: number[][] = [];
     if (this.sensors) {
       this.sensors.update(borders);
+      // console.log(this.sensors.readings);
+      this.getOffsets(arrayOffsets);
+
+      const outputs = Network.feedForward(arrayOffsets, this.brain);
+      if (this.useBrain) {
+        this.controls.up = outputs[0];
+        this.controls.left = outputs[1];
+        this.controls.right = outputs[2];
+        this.controls.down = outputs[3];
+      }
     }
   }
 
@@ -89,46 +112,28 @@ export class Ball {
   }
 
   private move() {
-    if (this.controlsType === "KEYS") {
-      if (this.controls.up) {
-        this.speed += this.acceleration;
-      }
-      if (this.controls.down) {
-        this.speed -= this.acceleration;
-      }
-
-      if (this.speed > this.maxSpeed) {
-        this.speed = this.maxSpeed;
-      }
-      if (this.speed < -this.maxSpeed) {
-        this.speed = -this.maxSpeed;
-      }
-
-      if (this.speed > 0) {
-        this.speed -= this.friction;
-      }
-      if (this.speed < 0) {
-        this.speed += this.friction;
-      }
-
-      if (Math.abs(this.speed) < this.friction) {
-        this.speed = 0;
-      }
-      if (this.speed !== 0) {
-        const flipPolarity = this.speed > 0 ? 1 : -1;
-        if (this.controls.left) {
-          this.angle += 0.03 * flipPolarity;
-        }
-        if (this.controls.right) {
-          this.angle -= 0.03 * flipPolarity;
-        }
-      }
-
+    if (this.controlsType === "KEYS" || this.controlsType === "AI") {
+      this.moveManualControls();
       this.x -= Math.sin(this.angle) * this.speed;
       this.y -= Math.cos(this.angle) * this.speed;
-    } else if (this.controlsType === "AI") {
+    } else if (this.controlsType === "RANDOM") {
       this.x += this.velX;
       this.y += this.velY;
+    }
+  }
+
+  private moveManualControls() {
+    if (this.controls.up) this.speed += this.acceleration;
+    if (this.controls.down) this.speed -= this.acceleration;
+    if (this.speed > this.maxSpeed) this.speed = this.maxSpeed;
+    if (this.speed < -this.maxSpeed) this.speed = -this.maxSpeed;
+    if (this.speed > 0) this.speed -= this.friction;
+    if (this.speed < 0) this.speed += this.friction;
+    if (Math.abs(this.speed) < this.friction) this.speed = 0;
+    if (this.speed !== 0) {
+      const flipPolarity = this.speed > 0 ? 1 : -1;
+      if (this.controls.left) this.angle += 0.03 * flipPolarity;
+      if (this.controls.right) this.angle -= 0.03 * flipPolarity;
     }
   }
 
@@ -148,6 +153,30 @@ export class Ball {
     if (this.y + this.size >= canvas.height) {
       this.velY = -this.velY;
       this.y = -this.size + canvas.height;
+    }
+  }
+  private getOffsets(arrayOffsets: number[][]) {
+    const offsetWhat = (s: sType) => {
+      let offset;
+      let result = 0;
+      for (const [key, value] of Object.entries(s)) {
+        if (value) {
+          offset = value.offset;
+          console.log(key, offset);
+        }
+      }
+      if (offset) {
+        result = offset;
+      }
+      return result;
+    };
+
+    const offsets = this.sensors.readings.map((s): number =>
+      s == null ? 0 : 1 - offsetWhat(s)
+    );
+
+    if (offsets) {
+      arrayOffsets.push(offsets);
     }
   }
 }
